@@ -25,7 +25,7 @@ public class Client {
 		frame.pack();
 		frame.setVisible(true);
 		
-				
+		//server		
 		Socket socket = null;
         PrintWriter out = null;
         BufferedReader in = null;
@@ -36,7 +36,6 @@ public class Client {
 	        	socket = new Socket(host, 7777);
 	            out = new PrintWriter(socket.getOutputStream(), true);
 	            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-	            //in = new InputStreamReader(socket.getInputStream());
 	            
 	            box.welcome();
 	            //String s = JOptionPane.showInputDialog(null, "Enter a string to send:");
@@ -44,9 +43,16 @@ public class Client {
 	            
 	            //while receiving input, print it on the screen and wait for next
 	            while(in != null)
-	            {
+	            {	
+	            	if (in.readLine() == null)
+	            		box.getInput();
+	            	
+	            	else
+	            		box.waitForInput();
+	            	
 	                out.println(input); //print in server
-	                box.showInChat(""+in.read()); //print in client
+	                //box.showInChat(""+in.readLine()); //print in client
+	                input = box.getText();
 	                //s = JOptionPane.showInputDialog(null, "Enter a string to send:");
 	            }
 	            

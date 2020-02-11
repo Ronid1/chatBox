@@ -14,6 +14,7 @@ public class ChatBox extends JPanel implements ActionListener{
 		private JTextArea output;
 		private String userName;
 		private String txt;
+		private boolean inBusy;
 		
 		public ChatBox(String name)
 		{
@@ -34,6 +35,8 @@ public class ChatBox extends JPanel implements ActionListener{
 			
 			this.add(input, BorderLayout.SOUTH);
 			this.add(scroll, BorderLayout.CENTER);
+			
+			inBusy = false;
 		}
 		
 		
@@ -56,15 +59,48 @@ public class ChatBox extends JPanel implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
-			if (e.getSource() == cmdSend)
-			{
+			if (e.getSource() == cmdSend) {
+				//getInput();
 				txt = text.getText();
 				showInChat(txt);
 				text.setText("");
 				txt = "";
 			}
-					
 		}
+		
+		public synchronized void getInput() {
+			
+			while(inBusy) {
+				try {
+					wait();
+				}
+				catch(InterruptedException s) {}
+			}
+			
+				txt = text.getText();
+				showInChat(txt);
+				text.setText("");
+				txt = "";
+				inBusy = false;
+				notifyAll();
+			
+		}
+		
+	public synchronized void waitForInput()
+	{
+		while (!inBusy)
+		{
+			try {
+				wait();
+			}
+			catch(InterruptedException e) {}
+		}
+		
+		inBusy = true;
+		notifyAll();
+		
+		
+	}
 
 		
 }
