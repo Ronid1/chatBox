@@ -23,7 +23,6 @@ public class Server {
 		            }         
 	        	}
 	        
-	        
 	        catch(InterruptedIOException e)  {}
 	        catch(IOException e) {}
 	        

@@ -38,22 +38,19 @@ public class Client {
 	            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	            
 	            box.welcome();
-	            //String s = JOptionPane.showInputDialog(null, "Enter a string to send:");
 	            String input = box.getText();
 	            
 	            //while receiving input, print it on the screen and wait for next
 	            while(in != null)
 	            {	
-	            	if (in.readLine() == null)
+	            	if (in.readLine() != null)
 	            		box.getInput();
 	            	
 	            	else
 	            		box.waitForInput();
 	            	
 	                out.println(input); //print in server
-	                //box.showInChat(""+in.readLine()); //print in client
 	                input = box.getText();
-	                //s = JOptionPane.showInputDialog(null, "Enter a string to send:");
 	            }
 	            
 	            //close all streams

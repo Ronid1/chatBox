@@ -22,6 +22,7 @@ public class ChatBox extends JPanel implements ActionListener{
 			cmdSend = new JButton ("Send");
 			cmdSend.addActionListener(this);
 			text = new JTextField();
+			text.addActionListener(this);
 			input = new JPanel(new BorderLayout());
 			this.setLayout(new BorderLayout());
 			
@@ -59,8 +60,9 @@ public class ChatBox extends JPanel implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
-			if (e.getSource() == cmdSend) {
-				//getInput();
+			//send text by either pressing "send" or Enter key
+			if (e.getSource() == cmdSend || e.getSource() == text) 
+			{
 				txt = text.getText();
 				showInChat(txt);
 				text.setText("");
@@ -98,8 +100,6 @@ public class ChatBox extends JPanel implements ActionListener{
 		
 		inBusy = true;
 		notifyAll();
-		
-		
 	}
 
 		
