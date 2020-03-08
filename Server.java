@@ -3,28 +3,33 @@ import java.io.*;
 
 public class Server {
 
-	 public static void main(String[] args)
+	    public static void main(String[] args) throws IOException
 	    {
-	        ServerSocket srv = null;
+	        ServerSocket srvSocket = null;
 	        boolean listening = true;
-	        ChatThread chat;
 	        
 	        try {
-		            srv = new ServerSocket(7777);
-	
-		            System.out.println("Ready");
-		            Socket socket = null;
-		            
-		            while(listening)
-		            {
-		                socket = srv.accept();
-		                chat = new ChatThread(socket);
-		                chat.start();
-		            }         
+	            srvSocket = new ServerSocket(7777);
+	        }
+	        
+	        catch(IOException e)
+	        {
+	            e.printStackTrace();
+	        }
+	        
+	        System.out.println("Server is ready");
+	        Socket socket = null;
+	        
+	        while (listening)
+	        {
+	        	try {
+	        		socket = srvSocket.accept();
+	        		new ChatThread(socket).start();
 	        	}
+	        	
+	        	catch (IOException e) {}
+	        }
 	        
-	        catch(InterruptedIOException e)  {}
-	        catch(IOException e) {}
-	        
+	        srvSocket.close();
 	    }
 }

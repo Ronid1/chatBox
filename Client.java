@@ -4,22 +4,30 @@ import javax.swing.*;
 
 public class Client {
 	
-	public static void main(String[] args)
+//	private boolean online = true;
+	private String userName;
+	private JFrame frame;
+	private ChatBox box;
+	
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+	
+	public static void main(String[] args) throws ClassNotFoundException
     {
 		Client c = new Client();
 		c.startChat();
     }
 	
-	private void startChat()
+	private void startChat() throws ClassNotFoundException
 	{
-        //Set a user name
-        String userName = JOptionPane.showInputDialog(null, "Enter user name:");
+        //set user name
+        userName = JOptionPane.showInputDialog(null, "Enter user name:");
         
 		//GUI
-		JFrame frame = new JFrame();
+		frame = new JFrame("Chat Messanger - " + userName);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(500,500);
-		ChatBox box = new ChatBox(userName);
+		box = new ChatBox();
 		
 		frame.add(box);
 		frame.pack();
@@ -27,32 +35,40 @@ public class Client {
 		
 		//server		
 		Socket socket = null;
-        PrintWriter out = null;
-        BufferedReader in = null;
         String host = "localhost";
         
         
         try{
 	        	socket = new Socket(host, 7777);
-	            out = new PrintWriter(socket.getOutputStream(), true);
-	            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	            out = new ObjectOutputStream(socket.getOutputStream());
+	            out.flush();
+	            in = new ObjectInputStream(socket.getInputStream());
 	            
-	            box.welcome();
-	            String input = box.getText();
+	            box.welcome(userName);
+	            String myMessage;
+	            String inputFromServer = (String)in.readObject();;
 	            
 	            //while receiving input, print it on the screen and wait for next
-	            while(in != null)
-	            {	
-	            	if (in.readLine() != null)
-	            		box.getInput();
-	            	
-	            	else
-	            		box.waitForInput();
-	            	
-	                out.println(input); //print in server
-	                input = box.getText();
-	            }
+		        while(inputFromServer != null)
+		        {	
+		        	System.out.println("input from server:" + inputFromServer); //TESTING
+		            box.showInChat(inputFromServer);
+		            
+		            //if I sent a message, pass it to server
+		        	if (box.newMessage() == true)
+		        	{
+		        		myMessage = box.getText();
+			         	System.out.println("in = " + myMessage); //TESTING
+			            out.writeObject(userName + ": " + myMessage);
+			            out.flush();
+		        	}
+		        	
+		        	inputFromServer = (String)in.readObject();
+		        }
+		            	                	
 	            
+	            System.out.println("done"); //TESTING
+
 	            //close all streams
 	            out.close();
 	            in.close();

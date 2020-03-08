@@ -7,16 +7,17 @@ import java.net.*;
 
 public class ChatThread extends Thread{
 	
-	private Socket socket;
-	private PrintWriter out;
-	private BufferedReader in;
+	private Socket socket = null;
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
 	
 	public ChatThread(Socket s)
 	{
 		socket = s;
 		try {
-				out = new PrintWriter(socket.getOutputStream(),true);
-				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	            out = new ObjectOutputStream(socket.getOutputStream());
+	            out.flush();
+	            in = new ObjectInputStream(socket.getInputStream());
 			}
 		
 		catch(IOException e) {}
@@ -25,23 +26,25 @@ public class ChatThread extends Thread{
 	
 	public void run()
 	{
-		String input;
-		
-		try {
-				input = in.readLine();
+		String text;
 			
-				while (input != null)
+		try {
+				text = (String) in.readObject(); //Receive input
+				while (text != null)
 				{
-					out.println(input);
-					input = in.readLine();
+					System.out.println(text); //TESTING
+					out.writeObject(text); //send it out to all clients
+					out.flush();
+					text = (String) in.readObject();
 				}
-				
-				//close all streams
-				in.close();
-				out.close();
-				socket.close();
-			}
-		
-		catch(IOException e) {}
+			
+			//close all streams
+			out.close();
+			in.close();
+			socket.close();
+		}
+			
+			catch(IOException | ClassNotFoundException e) {}
 	}
+
 }
