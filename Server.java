@@ -24,7 +24,7 @@ public class Server {
 	        {
 	        	try {
 	        		socket = srvSocket.accept();
-	        		new ChatThread(socket).start();
+	        		(new ChatThread(socket)).start();
 	        	}
 	        	
 	        	catch (IOException e) {}

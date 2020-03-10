@@ -10,6 +10,7 @@ public class ChatThread extends Thread{
 	private Socket socket = null;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
+	private String text;
 	
 	public ChatThread(Socket s)
 	{
@@ -26,25 +27,28 @@ public class ChatThread extends Thread{
 	
 	public void run()
 	{
-		String text;
-			
+		
 		try {
-				text = (String) in.readObject(); //Receive input
-				while (text != null)
+				System.out.println("new client online");
+				
+				//while user is connected to chat
+				while ((text = (String) in.readObject()) != null)
 				{
-					System.out.println(text); //TESTING
+					if (!text.equals("")) {
+					System.out.println(text);}
 					out.writeObject(text); //send it out to all clients
 					out.flush();
-					text = (String) in.readObject();
 				}
-			
+				
 			//close all streams
 			out.close();
 			in.close();
 			socket.close();
 		}
-			
-			catch(IOException | ClassNotFoundException e) {}
+		
+		catch(IOException | ClassNotFoundException e) {}
+		
+		System.out.println("client is offline");
 	}
 
 }

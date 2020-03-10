@@ -4,13 +4,14 @@ import javax.swing.*;
 
 public class Client {
 	
-//	private boolean online = true;
 	private String userName;
 	private JFrame frame;
 	private ChatBox box;
-	
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private Socket socket;
+    private boolean online = true;
+    private String myMessage;
 	
 	public static void main(String[] args) throws ClassNotFoundException
     {
@@ -18,7 +19,7 @@ public class Client {
 		c.startChat();
     }
 	
-	private void startChat() throws ClassNotFoundException
+	public Client()
 	{
         //set user name
         userName = JOptionPane.showInputDialog(null, "Enter user name:");
@@ -34,49 +35,64 @@ public class Client {
 		frame.setVisible(true);
 		
 		//server		
-		Socket socket = null;
+		socket = null;
         String host = "localhost";
-        
         
         try{
 	        	socket = new Socket(host, 7777);
 	            out = new ObjectOutputStream(socket.getOutputStream());
 	            out.flush();
 	            in = new ObjectInputStream(socket.getInputStream());
+        }
+        catch(IOException e) {}
+	}
+	
+	private void startChat() throws ClassNotFoundException
+	{ 
 	            
-	            box.welcome(userName);
-	            String myMessage;
-	            String inputFromServer = (String)in.readObject();;
-	            
-	            //while receiving input, print it on the screen and wait for next
-		        while(inputFromServer != null)
-		        {	
-		        	System.out.println("input from server:" + inputFromServer); //TESTING
-		            box.showInChat(inputFromServer);
+        myMessage = userName + " enterd chat";
+        String inputFromServer;
+        
+        try {
+        	 //send welcome message
+	         out.writeObject(myMessage);
+	         out.flush();
+
+		        //while connected to chat, send and receive input
+	            while (online) {
 		            
 		            //if I sent a message, pass it to server
-		        	if (box.newMessage() == true)
-		        	{
-		        		myMessage = box.getText();
+		            if ((myMessage = box.getMessage()) != null)
+		            {
 			         	System.out.println("in = " + myMessage); //TESTING
 			            out.writeObject(userName + ": " + myMessage);
-			            out.flush();
 		        	}
-		        	
-		        	inputFromServer = (String)in.readObject();
-		        }
-		            	                	
-	            
-	            System.out.println("done"); //TESTING
+		           
+		            else 
+		            	out.writeObject("");
+		            
+		            out.flush();
+		            
+		            //print messages from server
+		            if (!(inputFromServer = (String)in.readObject()).equals(""))
+		            {
+			        	System.out.println("input from server:" + inputFromServer); //TESTING
+			            box.showInChat(inputFromServer);
+		            }
+		            
+	            }
+		        
+		       out.writeObject(userName + " left chat"); //send welcome message
+		       out.flush();
+		       System.out.println("done"); //TESTING
+		
+		        //close all streams
+		        out.close();
+		        in.close();
+		        socket.close();
+	       }
 
-	            //close all streams
-	            out.close();
-	            in.close();
-	            socket.close();
-        	}
-        
-        
-        catch(UnknownHostException e) {}
-        catch(IOException e) {}
+        catch(IOException e) { System.out.println("no object to read");}
     }
+	
 }

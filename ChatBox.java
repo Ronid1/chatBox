@@ -4,6 +4,8 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 public class ChatBox extends JPanel implements ActionListener{
@@ -12,8 +14,7 @@ public class ChatBox extends JPanel implements ActionListener{
 		private JTextField text;
 		private JPanel input;
 		private JTextArea output;
-		private String txt;
-		private boolean newMsg = false;
+		private ArrayList<String> messages;
 		
 		public ChatBox()
 		{
@@ -34,49 +35,32 @@ public class ChatBox extends JPanel implements ActionListener{
 			
 			this.add(input, BorderLayout.SOUTH);
 			this.add(scroll, BorderLayout.CENTER);
+			messages = new ArrayList<String>();
 		}
 		
 		public void showInChat(String s)
 		{
 			output.append(s + "\n");
-			txt = ""; //clear saved text
 		}
 		
-		public void welcome(String name)
-		{
-			showInChat(name + " has enterd chat!\n");
-		}
 		
-		public String getText()
+		public String getMessage()
 		{
-			System.out.println("text = " + txt);
-			return txt;
-		}
-		
-		public boolean newMessage()
-		{
-			if (newMsg == true)
-			{
-				System.out.println("new message TRUE"); //TESTING
-				newMsg = false;
-				return true;
+			if (messages.size() > 0) {
+				return messages.remove(0);
 			}
 			
-			return false;
+			return null;
 		}
-		
 
 		@Override
 		public void actionPerformed(ActionEvent e) 
-		{
+		{ 
 			//send text by either pressing "send" or Enter key
 			if (e.getSource() == cmdSend || e.getSource() == text) 
 			{
-				newMsg = true; //set flag for new message
-				txt = text.getText();
-				System.out.println("message sent: " + txt); //TESTING
+				messages.add(text.getText());
 				text.setText(""); //clear typing area
 			}
 		}
-		
 }
