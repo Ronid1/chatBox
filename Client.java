@@ -63,10 +63,7 @@ public class Client {
 		            
 		            //if I sent a message, pass it to server
 		            if ((myMessage = box.getMessage()) != null)
-		            {
-			         	System.out.println("in = " + myMessage); //TESTING
 			            out.writeObject(userName + ": " + myMessage);
-		        	}
 		           
 		            else 
 		            	out.writeObject("");
@@ -75,16 +72,12 @@ public class Client {
 		            
 		            //print messages from server
 		            if (!(inputFromServer = (String)in.readObject()).equals(""))
-		            {
-			        	System.out.println("input from server:" + inputFromServer); //TESTING
 			            box.showInChat(inputFromServer);
-		            }
 		            
 	            }
 		        
-		       out.writeObject(userName + " left chat"); //send welcome message
+		       out.writeObject(userName + " left chat"); //send leaving message
 		       out.flush();
-		       System.out.println("done"); //TESTING
 		
 		        //close all streams
 		        out.close();

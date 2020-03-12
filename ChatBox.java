@@ -46,9 +46,8 @@ public class ChatBox extends JPanel implements ActionListener{
 		
 		public String getMessage()
 		{
-			if (messages.size() > 0) {
+			if (messages.size() > 0)
 				return messages.remove(0);
-			}
 			
 			return null;
 		}
