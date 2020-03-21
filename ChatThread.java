@@ -36,6 +36,10 @@ public class ChatThread extends Thread{
 		return out;
 	}
 	
+	public Socket getSocket()
+	{
+		return socket;
+	}
 	
 	public void run()
 	{
@@ -48,7 +52,7 @@ public class ChatThread extends Thread{
 					System.out.println(text);}
 					
 					//send message out to all clients
-					Server.sentToAll(text);
+					Server.sendToAll(text);
 				
 				}
 			//close all streams

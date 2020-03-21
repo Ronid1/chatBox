@@ -49,7 +49,7 @@ public class Client {
 	
 	private void startChat() throws ClassNotFoundException
 	{ 
-	            
+		System.out.println(userName + "is online");
         myMessage = userName + " enterd chat";
         String inputFromServer;
         
@@ -71,8 +71,10 @@ public class Client {
 		            out.flush();
 		            
 		            //print messages from server
-		            if (!(inputFromServer = (String)in.readObject()).equals(""))
+		            if (!(inputFromServer = (String)in.readObject()).equals("")) {
+		            	System.out.println("new message!");
 			            box.showInChat(inputFromServer);
+		            }
 		            
 	            }
 		        

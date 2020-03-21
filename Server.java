@@ -27,9 +27,12 @@ public class Server {
 	        {
 	        	try {
 	        		socket = srvSocket.accept();
-	        		ChatThread temp = new ChatThread(socket, ++i);
+	        		ChatThread temp = new ChatThread(socket, i);
 	        		temp.start();
 	        		clients.add(temp);
+	        		
+	        		System.out.println("client #" + clients.get(i).getID() + " enterd chat with "+ clients.get(i).getSocket());
+	        		i++;
 	        	}
 	        	
 	        	catch (IOException e) {}
@@ -39,7 +42,7 @@ public class Server {
 		}
 		
 		//Send a message to all users connected to server
-		public static void sentToAll(String message) throws IOException
+		public static void sendToAll(String message) throws IOException
 		{
 			for (ChatThread user: clients)
 			{
