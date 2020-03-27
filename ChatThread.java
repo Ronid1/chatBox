@@ -46,14 +46,12 @@ public class ChatThread extends Thread{
 		
 		try {				
 				//while user is connected to chat
-				while ((text = (String) in.readObject()) != null)
+				while ((text = (String) in.readObject()) != (null))
 				{
-					if (!text.equals("")) {
-					System.out.println(text);}
-					
-					//send message out to all clients
 					Server.sendToAll(text);
-				
+					//send message out to all clients
+					if (!text.equals(""))	
+						System.out.println(text);
 				}
 			//close all streams
 			out.close();
