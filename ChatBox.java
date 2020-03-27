@@ -43,7 +43,6 @@ public class ChatBox extends JPanel implements ActionListener{
 			output.append(s + "\n");
 		}
 		
-		
 		public String getMessage()
 		{
 			if (messages.size() > 0)
@@ -61,5 +60,6 @@ public class ChatBox extends JPanel implements ActionListener{
 				messages.add(text.getText());
 				text.setText(""); //clear typing area
 			}
+
 		}
 }

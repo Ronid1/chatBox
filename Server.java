@@ -41,21 +41,8 @@ public class Server {
 	        srvSocket.close();
 		}
 		
-		//Send a message to all users connected to server
-		public static void sendToAll(String message) throws IOException
-		{
-			for (ChatThread user: clients)
-			{
-				if (!message.equals(""))
-					System.out.println("sending message to " + user.getID());
-				user.getOut().writeObject(message);
-				user.getOut().flush();
-			}
-		}
-		
 		public static void main(String[] args) throws IOException
 	    {
-
 			Server server = new Server();
 			server.startSever();
 	    }

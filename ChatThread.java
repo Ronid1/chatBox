@@ -4,6 +4,8 @@
 
 import java.io.*;
 import java.net.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class ChatThread extends Thread{
 	
@@ -12,6 +14,7 @@ public class ChatThread extends Thread{
 	private ObjectInputStream in;
 	private String text;
 	private int id;
+	public Queue<String> messages = new LinkedList<>();
 	
 	public ChatThread(Socket s, int i)
 	{
@@ -41,25 +44,48 @@ public class ChatThread extends Thread{
 		return socket;
 	}
 	
+	public void addToQueue(String s)
+	{
+		messages.add(s);
+	}
+	
 	public void run()
 	{
 		
 		try {				
 				//while user is connected to chat
-				while ((text = (String) in.readObject()) != (null))
+				while ((text = (String) in.readObject()) != null)
 				{
-					Server.sendToAll(text);
-					//send message out to all clients
-					if (!text.equals(""))	
+					if (!text.equals(""))
+					{
+						//print text in server stream
 						System.out.println(text);
+						
+						//add message to all clients output queue
+						for (ChatThread client: Server.clients)
+							client.addToQueue(text);
+					}
+					
+					//if there is a message in the queue - send it
+					if (messages.peek() != null)
+						out.writeObject(messages.remove());
+					
+					//else, send empty message
+					else
+						out.writeObject("");
+					
+					out.flush();
+
 				}
+				
 			//close all streams
 			out.close();
 			in.close();
 			socket.close();
 		}
 		
-		catch(IOException | ClassNotFoundException e) {}
+		catch(IOException e) {} 
+		catch (ClassNotFoundException e) {}
 		
 		System.out.println("client " + id + " is offline");
 	}

@@ -62,8 +62,7 @@ public class Client {
 	            while (online) {
 		            
 		            //if I sent a message, pass it to server
-		            //if (!(myMessage = box.getMessage()).equals(null))
-		            if ((myMessage = box.getMessage()) != (null))
+		            if ((myMessage = box.getMessage()) != null)
 			            out.writeObject(userName + ": " + myMessage);
 		           
 		            else 
@@ -72,9 +71,11 @@ public class Client {
 		            out.flush();
 		            
 		            //print messages from server
-		            if (!(inputFromServer = (String)in.readObject()).equals(""))
+		            inputFromServer = (String)in.readObject();
+
+		            if (!inputFromServer.equals(""))
 		            {
-		            	System.out.println("new message!");
+		            	System.out.println("new message: " + inputFromServer);
 			            box.showInChat(inputFromServer);
 		            } 
 		            
